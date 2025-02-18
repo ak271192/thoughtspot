@@ -1,47 +1,120 @@
-# dagster_pipeline1
 
-This is a [Dagster](https://dagster.io/) project scaffolded with [`dagster project scaffold`](https://docs.dagster.io/getting-started/create-new-project).
+This project is a Dagster-based data pipeline that:
+- Processes NYC Taxi Data & NOAA Weather Data
+- Applies Pandas transformations
+- Stores data in SQLite3
+- Partitions Table 1 hourly (168 partitions for one week)
+- Includes tests for validation
+- Is easily reproducible & deployable
 
-## Getting started
+---
 
-First, install your Dagster code location as a Python package. By using the --editable flag, pip will install your Python package in ["editable mode"](https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs) so that as you develop, local code changes will automatically apply.
+1. Setup Instructions
 
-```bash
-pip install -e ".[dev]"
-```
+1.1 Install Prerequisites
 
-Then, start the Dagster UI web server:
+Ensure you have Python 3.9+ and Homebrew installed.
 
-```bash
+For macOS:
+brew install python sqlite3
+
+For Linux:
+sudo apt update && sudo apt install python3 sqlite3 -y
+
+---
+
+1.2 Clone the Repository
+git clone https://github.com/ak271192/dagster_pipeline1.git
+cd dagster_pipeline1
+
+---
+
+1.3 Create a Virtual Environment
+python3 -m venv venv
+source venv/bin/activate  # Activate venv (Mac/Linux)
+
+---
+
+1.4 Install Dependencies
+pip install -r requirements.txt
+
+---
+
+2. Running the Dagster Pipeline
+
+2.1 Start Dagster Web Server
 dagster dev
-```
+- Open Dagster UI at http://localhost:3000
+- Click "Launch Execution" for process_data_job
 
-Open http://localhost:3000 with your browser to see the project.
+---
 
-You can start writing assets in `dagster_pipeline1/assets.py`. The assets are automatically loaded into the Dagster code location as you define them.
+2.2 Run the Job via CLI
+dagster job launch -f dagster_pipeline1/jobs.py --job process_data_job
 
-## Development
+---
 
-### Adding new Python dependencies
+2.3 Verify Data in SQLite
+After running the pipeline, check the database:
+sqlite3 data_pipeline.db
 
-You can specify new Python dependencies in `setup.py`.
+Run:
+SELECT * FROM table_1 LIMIT 5;
+SELECT * FROM table_2 LIMIT 5;
+SELECT * FROM joined_table LIMIT 5;
 
-### Unit testing
+---
 
-Tests are in the `dagster_pipeline1_tests` directory and you can run tests using `pytest`:
+3. Running Tests
 
-```bash
-pytest dagster_pipeline1_tests
-```
+3.1 Ensure Virtual Environment is Activated
+source venv/bin/activate
 
-### Schedules and sensors
+3.2 Run Pytest
+pytest -v dagster_pipeline1/
+Expected output:
+All tests passed!
 
-If you want to enable Dagster [Schedules](https://docs.dagster.io/concepts/partitions-schedules-sensors/schedules) or [Sensors](https://docs.dagster.io/concepts/partitions-schedules-sensors/sensors) for your jobs, the [Dagster Daemon](https://docs.dagster.io/deployment/dagster-daemon) process must be running. This is done automatically when you run `dagster dev`.
+---
 
-Once your Dagster Daemon is running, you can start turning on schedules and sensors for your jobs.
+4. Folder Structure
 
-## Deploy on Dagster Cloud
+dagster_pipeline/
+│── dagster_pipeline/
+│    ├── assets.py        # Dagster assets for tables
+│    ├── jobs.py          # Dagster jobs
+│    ├── partitions.py    # Partitioning logic
+│    ├── repository.py    # Dagster repository
+│    ├── tests.py         # Pipeline tests
+│── data/                 # Static datasets (CSV files)
+│    ├── nyc_taxi.csv     # NYC taxi data
+│    ├── weather.csv      # Weather data
+│── workspace.yaml        # Dagster workspace config
+│── requirements.txt      # Dependencies
+│── Dockerfile            # Docker setup
+│── README.md             # Setup instructions
+│── pyproject.toml        # Dagster settings
 
-The easiest way to deploy your Dagster project is to use Dagster Cloud.
+---
 
-Check out the [Dagster Cloud Documentation](https://docs.dagster.cloud) to learn more.
+5. Deployment (Optional)
+
+5.1 Run in Docker
+docker build -t dagster-pipeline .
+docker run -p 3000:3000 dagster-pipeline
+
+
+
+6. Troubleshooting
+
+6.1 If dagster is not found
+source venv/bin/activate
+pip install dagster dagster-webserver
+
+6.2 If pytest doesn’t detect tests
+touch dagster_pipeline/__init__.py
+pytest -v dagster_pipeline/
+
+---
+
+
