@@ -1,1 +1,75 @@
+🚀 Future Enhancements for Dagster ETL Pipeline
+The current Dagster ETL Pipeline processes static batch data from NYC Taxi and NOAA Weather datasets. Below are some key enhancements that can make this pipeline more scalable, real-time, and production-ready.
+
+1️⃣ Use Real-Time Data APIs for Weather
+🔹 Current Issue:
+Right now, the pipeline processes static CSV files (weather.csv).
+Weather data changes frequently, so using a real-time weather API would improve accuracy.
+🔹 Enhancement: Integrate Real-Time Weather API
+Instead of reading from a CSV file, fetch weather data in real-time from an API like:
+NOAA API
+OpenWeatherMap API
+WeatherStack API
+🔹 Implementation Steps
+Replace table_2() asset in assets.py with an API call.
+Use requests to fetch live weather data every hour.
+Store the latest weather data in SQLite/PostgreSQL.
+Modify joined_table() to use real-time data instead of static CSV.
+🔹 Benefits
+✔ Provides up-to-date weather data for analysis.
+✔ Enables real-time analytics on trip data and weather impact.
+
+2️⃣ Deploy on AWS Using Dagster Cloud
+🔹 Current Issue:
+The pipeline currently runs locally.
+To scale, it should be deployed on a cloud platform.
+🔹 Enhancement: Deploy Dagster to AWS
+Use Dagster Cloud (Dagster Cloud Docs) for managed execution.
+Deploy the pipeline on:
+AWS Lambda (for serverless execution)
+AWS EC2 (for full control)
+AWS Fargate (containerized execution)
+Store processed data in Amazon RDS (PostgreSQL) instead of SQLite.
+🔹 Implementation Steps
+1. Containerize the pipeline using Docker:
+docker build -t dagster-pipeline .
+docker push <your-docker-repo>/dagster-pipeline
+
+2. Deploy to AWS:
+aws ecs create-cluster --cluster-name dagster-pipeline-cluster
+aws ecs run-task --cluster dagster-pipeline-cluster --task-definition dagster-pipeline-task
+
+3.Use Dagster Cloud to monitor jobs remotely.
+🔹 Benefits
+✔ Scalable & Production-Ready
+✔ Managed Dagster Jobs on AWS
+✔ Easier Monitoring & Debugging
+
+4️⃣ Store Data in PostgreSQL Instead of SQLite
+🔹 Current Issue:
+SQLite is not suitable for large-scale production.
+SQLite does not support concurrent writes well.
+🔹 Enhancement: Migrate to PostgreSQL
+PostgreSQL is a high-performance relational database that supports:
+Multi-user concurrency
+Faster query performance
+Remote database connections
+
+🔹 Benefits
+✔ Scales to Millions of Records
+✔ Faster Queries & Data Retrieval
+✔ Can Be Deployed on AWS RDS for Remote Access
+
+
+
+🔮 Future Scalability Ideas
+🔹 1. Implement Real-Time Streaming with Kafka
+Instead of batch processing, use Apache Kafka to stream taxi data in real-time.
+🔹 2. Add Data Validation & Quality Checks
+Use Great Expectations to ensure the data is clean before processing.
+🔹 3. Deploy Machine Learning Models
+Train ML models to predict taxi fares based on weather conditions.
+🔹 4. Implement REST API for Data Access
+Expose the cleaned data via a FastAPI service for external usage.
+
 
