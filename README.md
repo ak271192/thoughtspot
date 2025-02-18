@@ -24,7 +24,7 @@ sudo apt update && sudo apt install python3 sqlite3 -y
 ---
 
 1.2 Clone the Repository
-git clone https://github.com/ak271192/dagster_pipeline1.git
+git clone https://github.com/ak271192/thoughtspot.git
 cd dagster_pipeline1
 
 ---
