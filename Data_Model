@@ -1,0 +1,37 @@
+Table 1: NYC Taxi Trip Data
+Dataset Source: NYC Taxi Trip Records
+Purpose: Represents ride-sharing trips in New York City.
+Partitioning: Hourly (each row belongs to a specific hour).
+Key Fields:
+trip_id: Unique ID for each trip
+pickup_datetime: Time when the trip started
+dropoff_datetime: Time when the trip ended
+passenger_count: Number of passengers
+trip_distance: Distance traveled
+fare_amount: Fare charged for the trip
+
+
+
+Table 2: Weather Data
+Dataset Source: NOAA Weather Data
+Purpose: Represents hourly weather conditions in NYC.
+Key Fields:
+weather_id: Unique ID for each record
+timestamp: The hour for which the weather data is recorded
+temperature: Temperature in Fahrenheit
+precipitation: Rainfall amount
+wind_speed: Wind speed in mph
+
+
+
+
+Joined Table: Taxi + Weather
+This table joins Table 1 and Table 2 on a common hour field.
+Fields in the joined table:
+trip_id
+pickup_datetime
+dropoff_datetime
+temperature
+precipitation
+wind_speed
+fare_amount
